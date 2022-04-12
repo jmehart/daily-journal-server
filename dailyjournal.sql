@@ -32,3 +32,6 @@ INSERT INTO `Entries` VALUES (null, "Javascript", "Dealing with Date is terrible
 
 
 SELECT * FROM Entries
+
+SELECT * FROM Entries
+WHERE Entries.id = 3

@@ -1,6 +1,6 @@
 import sqlite3
 import json
-from models import Entries
+from models import Entries, Moods
 
 
 
@@ -19,8 +19,11 @@ def get_all_entries():
             e.concept,
             e.entry,
             e.date,
-            e.mood_id
+            e.mood_id,
+            m.label mood_label
         FROM Entries e
+        JOIN Moods m
+            ON m.id = e.mood_id
         """)
 
         # Initialize an empty list to hold all animal representations
@@ -40,10 +43,10 @@ def get_all_entries():
                             row['mood_id'])
 
             # Create a Location instance from the current row
-#            mood = Mood(row['id'], row['location_label'])
+            mood = Moods(row['id'], row['mood_label'])
 
             # Add the dictionary representation of the location to the animal
-#            journal_entry.mood = mood.__dict__
+            journal_entry.mood = mood.__dict__
 
             # Add the dictionary representation of the animal to the list
             journal_entries.append(journal_entry.__dict__)
@@ -66,9 +69,12 @@ def get_single_entry(id):
             e.concept,
             e.entry,
             e.date,
-            e.mood_id
+            e.mood_id,
+            m.label mood_label
         FROM Entries e
-        WHERE e.id = ?
+        JOIN Moods m
+            ON m.id = e.mood_id
+        WHERE e.id = ?    
         """, ( id, ))
 
         # Load the single result into memory
@@ -77,5 +83,21 @@ def get_single_entry(id):
         # Create an animal instance from the current row
         journal_entry = Entries(data['id'], data['concept'], data['entry'], data['date'],
                             data['mood_id'])
+        
+        mood = Moods(data['id'], data['mood_label'])
 
-        return json.dumps(journal_entry.__dict__)
+        journal_entry.mood = mood.__dict__
+
+    # Use `json` package to properly serialize list as JSON
+    return json.dumps(journal_entry.__dict__)
+    
+    
+    
+def delete_entry(id):
+    with sqlite3.connect("./dailyjournal.sqlite3") as conn:
+        db_cursor = conn.cursor()
+
+        db_cursor.execute("""
+        DELETE FROM ENTRIES
+        WHERE id = ?
+        """, (id, ))    

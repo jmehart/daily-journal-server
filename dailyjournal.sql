@@ -31,7 +31,15 @@ INSERT INTO `Entries` VALUES (null, "Javascript", "Dealing with Date is terrible
 
 
 
-SELECT * FROM Entries
+SELECT * FROM Entries;
 
 SELECT * FROM Entries
-WHERE Entries.id = 3
+WHERE Entries.id = 3;
+
+DELETE FROM Entries
+WHERE Entries.id = 1;
+
+SELECT * FROM Entries 
+WHERE entry LIKE '%Python%';
+
+SELECT * FROM Moods;

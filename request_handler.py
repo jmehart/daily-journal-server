@@ -2,38 +2,8 @@ import json
 
 from http.server import BaseHTTPRequestHandler, HTTPServer
 
-from views import get_all_animals, get_single_animal, get_all_locations, get_single_location, get_all_employees, get_single_employee, get_all_customers, get_single_customer, get_customers_by_email, get_animals_by_location_id, get_employees_by_location_id, get_animals_by_status, delete_animal, update_animal, create_animal, create_employee
+from views import get_all_entries
 
-# What is a HTTP status code?
-# An HTTP status code is a server response to a browser's request.
-# When you visit a website, your browser sends a request to the site's server,
-# and the server then responds to the browser's request with a three-digit code:
-# the HTTP status code.
-
-# The HTTP 200 OK success status response code indicates that the request has succeeded.
-# A 200 response is cacheable by default.
-# The meaning of a success depends on the HTTP request method:
-# GET : The resource has been fetched and is transmitted in the message body.
-
-# The HTTP 201 Created success status response code indicates that the request has succeeded
-# and has led to the creation of a resource.
-
-# The HTTP headers are used to pass additional information between the clients and the server
-# through the request and response header.
-
-# A function is a reusable block of programming statements designed to perform a certain task.
-# To define a function, Python provides the def keyword.
-
-# A Python if block no longer uses paranthesis 
-
-# A Python list is like an array - booleans are now capitalized
-
-# A Python dictionary looks like a JSON object and is used to create a collection of key value pairs
-# a key doesn't have to be a string with Python
-
-# Python print() function is similar to console.log()
-
-# Whitespace / indentation defines scope rather than {}
 
 # Here's a class. It inherits from another class.
 # For now, think of a class as a container for functions that
@@ -65,14 +35,15 @@ class HandleRequests(BaseHTTPRequestHandler):
             key = pair[0]  # 'email'
             value = pair[1]  # 'jenna@solis.com'
 
-            return ( resource, key, value ) # This is a tuple
+            return (resource, key, value)  # This is a tuple
 
         # No query string parameter
         else:
             id = None
             # Try to get the item at index 2
             try:
-                id = int(path_params[2]) # int() Python function to convert a string to an integer
+                # int() Python function to convert a string to an integer
+                id = int(path_params[2])
                 # Convert the string "1" to the integer 1
                 # This is the new parseInt()
             except IndexError:
@@ -81,7 +52,7 @@ class HandleRequests(BaseHTTPRequestHandler):
                 pass  # Request had trailing slash: /animals/
 
             return (resource, id)
-        
+
     # Here's a class function
     def _set_headers(self, status):
         # Notice this Docstring also includes information about the arguments passed to the function
@@ -123,53 +94,52 @@ class HandleRequests(BaseHTTPRequestHandler):
         # `/animals` or `/animals/2`
         if len(parsed) == 2:
             # Parse the URL and capture the tuple that is returned
-            ( resource, id ) = parsed
+            (resource, id) = parsed
 
-            if resource == "animals":
-                if id is not None:
-                    response = f"{get_single_animal(id)}"
-                else:
-                    response = f"{get_all_animals()}"
-            elif resource == "customers":
-                if id is not None:
-                    response = f"{get_single_customer(id)}"
-                else:
-                    response = f"{get_all_customers()}"
-            elif resource == "employees":
-                if id is not None:
-                    response = f"{get_single_employee(id)}"
-                else:
-                    response = f"{get_all_employees()}"
-            elif resource == "locations":
-                if id is not None:
-                    response = f"{get_single_location(id)}"
-                else:
-                    response = f"{get_all_locations()}"                
+            if resource == "entries":
+                #     if id is not None:
+                #         response = f"{get_single_animal(id)}"
+                #     else:
+                response = f"{get_all_entries()}"
+            # elif resource == "customers":
+            #     if id is not None:
+            #         response = f"{get_single_customer(id)}"
+            #     else:
+            #         response = f"{get_all_customers()}"
+            # elif resource == "employees":
+            #     if id is not None:
+            #         response = f"{get_single_employee(id)}"
+            #     else:
+            #         response = f"{get_all_employees()}"
+            # elif resource == "locations":
+            #     if id is not None:
+            #         response = f"{get_single_location(id)}"
+            #     else:
+            #         response = f"{get_all_locations()}"
 
         # Response from parse_url() is a tuple with 3
         # items in it, which means the request was for
         # `/resource?parameter=value`
         elif len(parsed) == 3:
-            ( resource, key, value ) = parsed
+            (resource, key, value) = parsed
 
             # Is the resource `customers` and was there a
             # query parameter that specified the customer
             # email as a filtering value?
-            if key == "email" and resource == "customers":
-                response = get_customers_by_email(value)
-                
-            if key == "location_id" and resource == "animals":
-                response = get_animals_by_location_id(value)
-                
-            if key == "location_id" and resource == "employees":
-                response = get_employees_by_location_id(value)
-                
-            if key == "status" and resource == "animals":
-                response = get_animals_by_status(value)          
+            # if key == "email" and resource == "customers":
+            #     response = get_customers_by_email(value)
+
+            # if key == "location_id" and resource == "animals":
+            #     response = get_animals_by_location_id(value)
+
+            # if key == "location_id" and resource == "employees":
+            #     response = get_employees_by_location_id(value)
+
+            # if key == "status" and resource == "animals":
+            #     response = get_animals_by_status(value)
 
         self.wfile.write(response.encode())
-        
-        
+
     def do_PUT(self):
         content_len = int(self.headers.get('content-length', 0))
         post_body = self.rfile.read(content_len)
@@ -180,8 +150,8 @@ class HandleRequests(BaseHTTPRequestHandler):
 
         success = False
 
-        if resource == "animals":
-            success = update_animal(id, post_body)
+        # if resource == "animals":
+        #     success = update_animal(id, post_body)
         # rest of the elif's
 
         if success:
@@ -212,58 +182,56 @@ class HandleRequests(BaseHTTPRequestHandler):
         # Add a new animal to the list. Don't worry about
         # the orange squiggle, you'll define the create_animal
         # function next.
-        if resource == "animals":
-            new_resource = create_animal(post_body)   
+        # if resource == "animals":
+        #     new_resource = create_animal(post_body)
 
         # Add a new location to the list. Don't worry about
         # the orange squiggle, you'll define the create_location
         # function next.
     #     if resource == "locations":
-    #         new_resource = create_location(post_body)   
+    #         new_resource = create_location(post_body)
 
     #     # Add a new employee to the list. Don't worry about
     #     # the orange squiggle, you'll define the create_employee
     #     # function next.
-        if resource == "employees":
-            new_resource = create_employee(post_body)   
+        # if resource == "employees":
+        #     new_resource = create_employee(post_body)
 
     #     # Add a new customer to the list. Don't worry about
     #     # the orange squiggle, you'll define the create_customer
     #     # function next.
     #     if resource == "customers":
-    #         new_resource = create_customer(post_body)   
+    #         new_resource = create_customer(post_body)
 
     #     # Encode the new resource and send in response
         self.wfile.write(f"{new_resource}".encode())
-        
 
     def do_DELETE(self):
-    #     # Set a 204 response code
-    #     # A 204 response code in HTTP means, 
-    #     # "I, the server, successfully processed your request, 
-    #     # but I have no information to send back to you."
+        #     # Set a 204 response code
+        #     # A 204 response code in HTTP means,
+        #     # "I, the server, successfully processed your request,
+        #     # but I have no information to send back to you."
         self._set_headers(204)
 
     #     # Parse the URL
         (resource, id) = self.parse_url(self.path)
 
     #     # Delete a single animal from the list
-        if resource == "animals":
-            delete_animal(id)
-            
+        # if resource == "animals":
+        #     delete_animal(id)
+
         # if resource == "locations":
-        #     delete_location(id)    
-            
+        #     delete_location(id)
+
         # if resource == "employees":
-        #     delete_employee(id) 
-            
+        #     delete_employee(id)
+
         # if resource == "customers":
-        #     delete_customer(id)       
+        #     delete_customer(id)
 
     #     # Encode the new animal and send in response
         self.wfile.write("".encode())
-        
-        
+
     # def do_PUT(self):
     #     self._set_headers(204)
     #     content_len = int(self.headers.get('content-length', 0))
@@ -276,13 +244,13 @@ class HandleRequests(BaseHTTPRequestHandler):
     #     # Delete a single animal from the list
     #     # if resource == "animals":
     #     #     update_animal(id, post_body)
-            
+
     #     if resource == "locations":
     #         update_location(id, post_body)
-            
+
     #     if resource == "employees":
     #         update_employee(id, post_body)
-            
+
     #     if resource == "customers":
     #         update_customer(id, post_body)
 

@@ -43,3 +43,4 @@ SELECT * FROM Entries
 WHERE entry LIKE '%Python%';
 
 SELECT * FROM Moods;
+

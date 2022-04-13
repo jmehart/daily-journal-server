@@ -104,7 +104,7 @@ def delete_entry(id):
         
         
 
-def search_entries():
+def search_entries(entry):
     # Open a connection to the database
     with sqlite3.connect("./dailyjournal.sqlite3") as conn:
 
@@ -124,8 +124,8 @@ def search_entries():
         FROM Entries e
         JOIN Moods m
             ON m.id = e.mood_id
-        WHERE entry LIKE '%?%'    
-        """)
+        WHERE e.entry LIKE ?    
+        """, ( entry, ))
 
         # Initialize an empty list to hold all animal representations
         journal_entries = []

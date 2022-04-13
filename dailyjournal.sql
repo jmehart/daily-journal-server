@@ -37,10 +37,10 @@ SELECT * FROM Entries
 WHERE Entries.id = 3;
 
 DELETE FROM Entries
-WHERE Entries.id = 1;
+WHERE Entries.id = 7;
 
 SELECT * FROM Entries 
-WHERE entry LIKE '%Python%';
+WHERE Entries.entry LIKE '%python%';
 
 SELECT * FROM Moods;
 

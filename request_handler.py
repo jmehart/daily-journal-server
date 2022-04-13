@@ -2,7 +2,7 @@ import json
 
 from http.server import BaseHTTPRequestHandler, HTTPServer
 
-from views import get_all_entries, get_single_entry, delete_entry, get_all_moods, create_journal_entry, update_entry
+from views import get_all_entries, get_single_entry, delete_entry, get_all_moods, create_journal_entry, update_entry, search_entries
 
 
 # Here's a class. It inherits from another class.
@@ -126,8 +126,8 @@ class HandleRequests(BaseHTTPRequestHandler):
             # Is the resource `customers` and was there a
             # query parameter that specified the customer
             # email as a filtering value?
-            # if key == "email" and resource == "customers":
-            #     response = get_customers_by_email(value)
+            if key == "q" and resource == "entries":
+                response = search_entries(value)
 
             # if key == "location_id" and resource == "animals":
             #     response = get_animals_by_location_id(value)

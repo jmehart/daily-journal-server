@@ -1,6 +1,6 @@
 import sqlite3
 import json
-from models import Entries, Moods
+from models import Entries, Moods, Tags
 
 
 
@@ -34,6 +34,28 @@ def get_all_entries():
 
         # Iterate list of data returned from database
         for row in dataset:
+            
+            rowId = row['id']
+            
+            db_cursor.execute("""
+            SELECT *
+            FROM Entries e
+            LEFT JOIN Entrytags et 
+                on et.entry_id = e.id
+            LEFT JOIN Tags t 
+                on t.id = et.tag_id
+            WHERE et.entry_id = ?
+            GROUP BY t.id
+            """, (rowId, ))
+            
+            data = db_cursor.fetchall()
+            
+            tags = []
+            
+            for current_tag in data:
+                tag = Tags(current_tag['id'], current_tag['name'])
+                
+                tags.append(tag.__dict__)
 
             # Create an animal instance from the current row.
             # Note that the database fields are specified in
@@ -47,6 +69,8 @@ def get_all_entries():
 
             # Add the dictionary representation of the location to the animal
             journal_entry.mood = mood.__dict__
+            
+            journal_entry.tags = tags
 
             # Add the dictionary representation of the animal to the list
             journal_entries.append(journal_entry.__dict__)
@@ -178,7 +202,18 @@ def create_journal_entry(new_entry):
         # was sent by the client so that the client sees the
         # primary key in the response.
         new_entry['id'] = id
+        
+        entry_tags = []
 
+        for tag in new_entry['tags']:
+            db_cursor.execute("""
+            INSERT INTO Entrytags
+                (entry_id, tag_id)
+            VALUES
+                (?, ?);
+            """, (id, tag))
+            
+            entry_tags.append(tag)
 
     return json.dumps(new_entry)       
 
@@ -202,6 +237,18 @@ def update_entry(id, new_entry):
         # Were any rows affected?
         # Did the client send an `id` that exists?
         rows_affected = db_cursor.rowcount
+        
+        entry_tags = []
+        
+        for tag in new_entry['tags']:
+            db_cursor.execute("""
+            INSERT INTO Entrytags
+                (entry_id, tag_id)
+            VALUES
+                (?, ?);
+            """, (id, tag))  
+            
+            entry_tags.append(tag)      
 
     if rows_affected == 0:
         # Forces 404 response by main module

@@ -2,7 +2,7 @@ import json
 
 from http.server import BaseHTTPRequestHandler, HTTPServer
 
-from views import get_all_entries, get_single_entry, delete_entry, get_all_moods, create_journal_entry, update_entry, search_entries
+from views import get_all_entries, get_single_entry, delete_entry, get_all_moods, create_journal_entry, update_entry, search_entries, get_single_tag, get_all_tags
 
 
 # Here's a class. It inherits from another class.
@@ -106,11 +106,11 @@ class HandleRequests(BaseHTTPRequestHandler):
             #         response = f"{get_single_customer(id)}"
             #     else:
                     response = f"{get_all_moods()}"
-            # elif resource == "employees":
-            #     if id is not None:
-            #         response = f"{get_single_employee(id)}"
-            #     else:
-            #         response = f"{get_all_employees()}"
+            elif resource == "tags":
+                if id is not None:
+                    response = f"{get_single_tag(id)}"
+                else:
+                    response = f"{get_all_tags()}"
             # elif resource == "locations":
             #     if id is not None:
             #         response = f"{get_single_location(id)}"

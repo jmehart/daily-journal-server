@@ -12,6 +12,19 @@ CREATE TABLE `Moods` (
     `label`    TEXT NOT NULL
 );
 
+CREATE TABLE `Tags` (
+    `id`    INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    `name`    TEXT NOT NULL
+);
+
+CREATE TABLE `Entrytags` (
+    `id`    INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    `entry_id`    INTEGER NOT NULL,
+    `tag_id`    INTEGER NOT NULL,
+    FOREIGN KEY(`entry_id`) REFERENCES `Entries`(`id`),
+    FOREIGN KEY(`tag_id`) REFERENCES `Tags`(`id`)
+);
+
 
 INSERT INTO `Moods` VALUES (null, "Happy");
 INSERT INTO `Moods` VALUES (null, "Sad");
@@ -29,9 +42,14 @@ INSERT INTO `Entries` VALUES (null, "Python", "Python is named after the Monty P
 INSERT INTO `Entries` VALUES (null, "Python", "Why did it take so long for python to have a switch statement? It's much cleaner than if/elif blocks.", "Wed Sep 15 2021 10:13:11", 3);
 INSERT INTO `Entries` VALUES (null, "Javascript", "Dealing with Date is terrible. Why do you have to add an entire package just to format a date. It makes no sense.", "Wed Sep 15 2021 10:14:05", 3);
 
+INSERT INTO `Tags` VALUES (null, "Front-end");
+INSERT INTO `Tags` VALUES (null, "Back-end");
+INSERT INTO `Tags` VALUES (null, "Misc");
 
 
 SELECT * FROM Entries;
+
+SELECT * FROM Tags;
 
 SELECT * FROM Entries
 WHERE Entries.id = 3;
